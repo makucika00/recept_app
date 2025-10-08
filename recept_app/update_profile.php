@@ -1,66 +1,70 @@
 <?php
+// update_profile.php
 session_start();
 require_once 'db_config.php';
 
 if (!isset($_SESSION['user_id'])) {
-    die("Nincs jogosultságod.");
+    header('Location: login.php');
+    exit;
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user_id = $_SESSION['user_id'];
     
-    $full_name = trim($_POST['full_name']);
-    $email = filter_var(trim($_POST['email']), FILTER_VALIDATE_EMAIL);
-    $birth_date = !empty($_POST['birth_date']) ? $_POST['birth_date'] : null;
+    // Adatok fogadása
+    $display_name = trim($_POST['display_name']);
+    $username = trim($_POST['username']);
+    $email = trim($_POST['email']);
     $bio = trim($_POST['bio']);
-    $header_color = $_POST['profile_header_color'];
-
+    $profile_header_color = $_POST['profile_header_color'];
     $new_password = $_POST['new_password'];
     $confirm_password = $_POST['confirm_password'];
 
-    // Jelszó ellenőrzése
-    if (!empty($new_password) && $new_password !== $confirm_password) {
-        $_SESSION['profile_message'] = ['type' => 'error', 'text' => 'A megadott új jelszavak nem egyeznek.'];
-        header("Location: profile.php");
-        exit();
+    if (empty($display_name) || empty($username) || empty($email)) {
+        $_SESSION['profile_update_error'] = 'A Név, Felhasználónév és Email mezők kitöltése kötelező!';
+        header('Location: profile.php');
+        exit;
     }
 
     try {
-        // Alap UPDATE parancs felépítése
-        $sql = "UPDATE users SET full_name = :full_name, email = :email, birth_date = :birth_date, bio = :bio, profile_header_color = :color";
+        $sql = "UPDATE users SET display_name = :display_name, username = :username, email = :email, bio = :bio, profile_header_color = :color";
         $params = [
-            ':full_name' => $full_name,
+            ':display_name' => $display_name,
+            ':username' => $username,
             ':email' => $email,
-            ':birth_date' => $birth_date,
             ':bio' => $bio,
-            ':color' => $header_color,
-            ':id' => $user_id
+            ':color' => $profile_header_color,
         ];
 
-        // Jelszó hozzáadása a parancshoz, ha szükséges
         if (!empty($new_password)) {
-            $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
-            $sql .= ", password_hash = :password";
-            $params[':password'] = $hashed_password;
+            if ($new_password === $confirm_password) {
+                $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
+                $sql .= ", password = :password";
+                $params[':password'] = $hashed_password;
+            } else {
+                $_SESSION['profile_update_error'] = 'A megadott új jelszavak nem egyeznek!';
+                header('Location: profile.php');
+                exit;
+            }
         }
 
         $sql .= " WHERE id = :id";
-        
+        $params[':id'] = $user_id;
+
         $stmt = $conn->prepare($sql);
         $stmt->execute($params);
 
-        $_SESSION['profile_message'] = ['type' => 'success', 'text' => 'Az adataid sikeresen frissültek!'];
+        $_SESSION['profile_update_success'] = 'Profil sikeresen frissítve!';
         
     } catch (PDOException $e) {
-        // Ellenőrizzük, hogy a hiba a foglalt e-mail cím miatt van-e
-        if ($e->errorInfo[1] == 1062) { // 1062 = Duplicate entry
-            $_SESSION['profile_message'] = ['type' => 'error', 'text' => 'Ez az e-mail cím már foglalt. Kérlek, adj meg egy másikat.'];
+        if ($e->errorInfo[1] == 1062) {
+             $_SESSION['profile_update_error'] = 'A megadott felhasználónév vagy email cím már foglalt!';
         } else {
-            $_SESSION['profile_message'] = ['type' => 'error', 'text' => 'Adatbázis hiba történt a mentés során.'];
+             $_SESSION['profile_update_error'] = 'Adatbázis hiba: ' . $e->getMessage();
         }
     }
-}
 
-header("Location: profile.php");
-exit();
+    header('Location: profile.php');
+    exit;
+}
 ?>

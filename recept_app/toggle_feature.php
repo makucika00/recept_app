@@ -23,7 +23,7 @@ $new_status = 0;
 
 try {
     // 3. Jelenlegi állapot lekérdezése
-    $stmt = $conn->prepare("SELECT is_featured FROM posts WHERE id = :id");
+    $stmt = $conn->prepare("SELECT is_featured FROM recipes WHERE id = :id");
     $stmt->bindParam(':id', $post_id);
     $stmt->execute();
     $post = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -33,7 +33,7 @@ try {
         $new_status = $post['is_featured'] == 1 ? 0 : 1;
 
         // 5. Adatbázis frissítése az új állapottal
-        $update_stmt = $conn->prepare("UPDATE posts SET is_featured = :status WHERE id = :id");
+        $update_stmt = $conn->prepare("UPDATE recipes SET is_featured = :status WHERE id = :id");
         $update_stmt->bindParam(':status', $new_status, PDO::PARAM_INT);
         $update_stmt->bindParam(':id', $post_id, PDO::PARAM_INT);
         $update_stmt->execute();

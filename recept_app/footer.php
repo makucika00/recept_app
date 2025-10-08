@@ -1,11 +1,15 @@
 <footer class="footer">
     <?php
-        $footer_settings = [];
-        try {
-            if (!isset($conn)) { require_once 'db_config.php'; }
-            $stmt = $conn->query("SELECT setting_key, setting_value FROM settings WHERE setting_key LIKE 'footer_%'");
-            $footer_settings = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
-        } catch (PDOException $e) {}
+    $footer_settings = [];
+    try {
+        if (!isset($conn)) {
+            require_once 'db_config.php';
+        }
+        $stmt = $conn->query("SELECT setting_key, setting_value FROM settings WHERE setting_key LIKE 'footer_%'");
+        $footer_settings = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+    } catch (PDOException $e) {
+        
+    }
     ?>
     <div class="footer-left">
         <h3>Elérhetőségek</h3>
@@ -17,9 +21,9 @@
         <h3>Egyéb információk</h3>
         <p>© <?php echo date('Y'); ?> Minden jog fenntartva.</p>
     </div>
-    <?php if (isset($_SESSION['is_admin']) && $_SESSION['is_admin'] == 1): ?>
+<?php if (isset($_SESSION['is_admin']) && $_SESSION['is_admin'] == 1): ?>
         <button id="openFooterEditModalBtn" class="action-btn page-edit-btn" title="Footer szerkesztése"><i class="fas fa-pencil-alt"></i></button>
-    <?php endif; ?>
+<?php endif; ?>
 </footer>
 </main>
 
@@ -29,21 +33,23 @@
         <h2>Menü szerkesztése</h2>
         <form action="save_settings.php" method="POST">
             <?php
-                if (!isset($settings_menu)) {
-                    try {
-                        $stmt = $conn->query("SELECT setting_value FROM settings WHERE setting_key = 'navbar_menu'");
-                        $settings_menu = $stmt->fetch(PDO::FETCH_ASSOC);
-                    } catch(PDOException $e) { $settings_menu = ['setting_value' => '[]']; }
+            if (!isset($settings_menu)) {
+                try {
+                    $stmt = $conn->query("SELECT setting_value FROM settings WHERE setting_key = 'navbar_menu'");
+                    $settings_menu = $stmt->fetch(PDO::FETCH_ASSOC);
+                } catch (PDOException $e) {
+                    $settings_menu = ['setting_value' => '[]'];
                 }
-                $menu_items_modal = json_decode($settings_menu['setting_value'] ?? '[]', true);
-                for ($i = 0; $i < 3; $i++):
-            ?>
-            <div class="form-group-inline" style="margin-bottom: 10px;">
-                <label>Menüpont <?php echo $i + 1; ?>:</label>
-                <input type="text" name="menu_text[]" placeholder="Szöveg" value="<?php echo htmlspecialchars($menu_items_modal[$i]['text'] ?? ''); ?>">
-                <input type="text" name="menu_href[]" placeholder="Link" value="<?php echo htmlspecialchars($menu_items_modal[$i]['href'] ?? ''); ?>">
-            </div>
-            <?php endfor; ?>
+            }
+            $menu_items_modal = json_decode($settings_menu['setting_value'] ?? '[]', true);
+            for ($i = 0; $i < 3; $i++):
+                ?>
+                <div class="form-group-inline" style="margin-bottom: 10px;">
+                    <label>Menüpont <?php echo $i + 1; ?>:</label>
+                    <input type="text" name="menu_text[]" placeholder="Szöveg" value="<?php echo htmlspecialchars($menu_items_modal[$i]['text'] ?? ''); ?>">
+                    <input type="text" name="menu_href[]" placeholder="Link" value="<?php echo htmlspecialchars($menu_items_modal[$i]['href'] ?? ''); ?>">
+                </div>
+<?php endfor; ?>
             <button type="submit" class="filter-btn" style="margin-top: 20px;">Menü Mentése</button>
         </form>
     </div>
@@ -186,103 +192,101 @@
 <script src="https://cdn.tiny.cloud/1/vv97jvd58917tzz57f6jud0a25oxauu9j799tpe7df0een7y/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 <script>
     tinymce.init({
-        selector: '#edit-content-textarea',
-        plugins: 'autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table help wordcount',
-        toolbar: 'undo redo | blocks | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | image link | help',
-        images_upload_url: 'upload_image.php',
-        automatic_uploads: true,
-        file_picker_types: 'image',
-        images_upload_base_path: '/recept_app'
-    });
-</script>
+    selector: '#edit-content-textarea',
+            plugins: 'autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table help wordcount',
+            toolbar: 'undo redo | blocks | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | image link | help',
+            images_upload_url: 'upload_image.php',
+            automatic_uploads: true,
+            file_picker_types: 'image',
+            images_upload_base_path: '/recept_app'
+    });</script>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-    
+    document.addEventListener('DOMContentLoaded', () => {
+
     // --- 1. KERESŐ ÉS LIVE SEARCH MŰKÖDÉSE ---
     const searchContainer = document.querySelector('.search-container');
     const searchBtn = document.querySelector('.search-btn');
     const searchInput = document.querySelector('.search-input');
     const liveSearchResultsContainer = document.getElementById('liveSearchResults');
     if (searchContainer && searchBtn && searchInput) {
-        const ICON_SEARCH = '<i class="fas fa-search"></i>';
-        const ICON_CLOSE = '<i class="fas fa-times"></i>';
-        searchBtn.innerHTML = ICON_SEARCH;
-        searchBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            searchContainer.classList.toggle('active');
-            if (searchContainer.classList.contains('active')) {
-                searchInput.focus();
-                searchBtn.innerHTML = ICON_CLOSE;
-            } else {
-                searchBtn.innerHTML = ICON_SEARCH;
-            }
-        });
-        if (liveSearchResultsContainer) {
-            searchInput.addEventListener('input', function() {
-                const query = this.value;
-                if (query.length < 2) {
-                    liveSearchResultsContainer.innerHTML = '';
-                    liveSearchResultsContainer.style.display = 'none';
-                    return;
-                }
-                fetch('live_search.php?query=' + encodeURIComponent(query))
-                    .then(response => response.json())
-                    .then(data => {
-                        liveSearchResultsContainer.innerHTML = '';
-                        if (data.length > 0) {
-                            data.forEach(item => {
-                                const link = document.createElement('a');
-                                link.href = 'search_results.php?query=' + encodeURIComponent(item.title);
-                                link.textContent = item.title;
-                                liveSearchResultsContainer.appendChild(link);
-                            });
-                            liveSearchResultsContainer.style.display = 'block';
-                        } else {
-                            liveSearchResultsContainer.style.display = 'none';
-                        }
-                    });
+    const ICON_SEARCH = '<i class="fas fa-search"></i>';
+    const ICON_CLOSE = '<i class="fas fa-times"></i>';
+    searchBtn.innerHTML = ICON_SEARCH;
+    searchBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    searchContainer.classList.toggle('active');
+    if (searchContainer.classList.contains('active')) {
+    searchInput.focus();
+    searchBtn.innerHTML = ICON_CLOSE;
+    } else {
+    searchBtn.innerHTML = ICON_SEARCH;
+    }
+    });
+    if (liveSearchResultsContainer) {
+    searchInput.addEventListener('input', function() {
+    const query = this.value;
+    if (query.length < 2) {
+    liveSearchResultsContainer.innerHTML = '';
+    liveSearchResultsContainer.style.display = 'none';
+    return;
+    }
+    fetch('live_search.php?query=' + encodeURIComponent(query))
+            .then(response => response.json())
+            .then(data => {
+            liveSearchResultsContainer.innerHTML = '';
+            if (data.length > 0) {
+            data.forEach(item => {
+            const link = document.createElement('a');
+            link.href = 'search_results.php?query=' + encodeURIComponent(item.title);
+            link.textContent = item.title;
+            liveSearchResultsContainer.appendChild(link);
             });
-        }
+            liveSearchResultsContainer.style.display = 'block';
+            } else {
+            liveSearchResultsContainer.style.display = 'none';
+            }
+            });
+    });
+    }
     }
 
     // --- 2. FELTÖLTÉSI ÜZENETEK KEZELÉSE ---
     const uploadMessage = <?php echo json_encode($upload_message ?? null); ?>;
     const uploadMessageType = <?php echo json_encode($upload_message_type ?? null); ?>;
     const sourceModal = <?php echo json_encode($_SESSION['source_modal'] ?? null); ?>;
-    <?php unset($_SESSION['source_modal']); ?>
+<?php unset($_SESSION['source_modal']); ?>
     if (uploadMessageType === 'error') {
-        let errorModal, errorDiv;
-        if (sourceModal === 'banner') {
-            errorModal = document.getElementById('bannerEditModal');
-            errorDiv = document.getElementById('bannerUploadError');
-        } else if (sourceModal === 'logo') {
-            errorModal = document.getElementById('logoEditModal');
-            errorDiv = document.getElementById('logoUploadError');
-        } else if (sourceModal === 'profile') {
-            errorModal = document.getElementById('profilePictureModal');
-            errorDiv = document.getElementById('profileUploadError');
-        }
-        if (errorModal && errorDiv) {
-            errorDiv.textContent = uploadMessage;
-            errorDiv.style.display = 'block';
-            errorModal.style.display = 'block';
-        }
+    let errorModal, errorDiv;
+    if (sourceModal === 'banner') {
+    errorModal = document.getElementById('bannerEditModal');
+    errorDiv = document.getElementById('bannerUploadError');
+    } else if (sourceModal === 'logo') {
+    errorModal = document.getElementById('logoEditModal');
+    errorDiv = document.getElementById('logoUploadError');
+    } else if (sourceModal === 'profile') {
+    errorModal = document.getElementById('profilePictureModal');
+    errorDiv = document.getElementById('profileUploadError');
+    }
+    if (errorModal && errorDiv) {
+    errorDiv.textContent = uploadMessage;
+    errorDiv.style.display = 'block';
+    errorModal.style.display = 'block';
+    }
     }
     if (uploadMessageType === 'success') {
-        alert(uploadMessage);
+    alert(uploadMessage);
     }
 
     // --- 3. MODÁLIS ABLAKOK NYITÁSA ---
     document.getElementById('openMenuEditModalBtn')?.addEventListener('click', () => { document.getElementById('menuEditModal').style.display = 'block'; });
     document.getElementById('openFooterEditModalBtn')?.addEventListener('click', () => { document.getElementById('footerEditModal').style.display = 'block'; });
     document.getElementById('profile-image-trigger')?.addEventListener('click', () => { document.getElementById('profilePictureModal').style.display = 'block'; });
-    
     document.getElementById('openNewPostModalBtn')?.addEventListener('click', () => {
-        const modal = document.getElementById('newPostModal');
-        modal.style.display = 'block';
-        tinymce.init({
-            selector: '#new-content-textarea',
+    const modal = document.getElementById('newPostModal');
+    modal.style.display = 'block';
+    tinymce.init({
+    selector: '#new-content-textarea',
             height: 400,
             plugins: 'autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table help wordcount',
             toolbar: 'undo redo | blocks | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | image link | help',
@@ -290,156 +294,162 @@ document.addEventListener('DOMContentLoaded', () => {
             automatic_uploads: true,
             file_picker_types: 'image',
             images_upload_base_path: '/recept_app'
-        });
     });
-
+    });
     document.getElementById('editBannerBtn')?.addEventListener('click', (e) => {
-        document.getElementById('banner_title_input').value = e.currentTarget.dataset.title;
-        document.getElementById('bannerEditModal').style.display = 'block';
+    document.getElementById('banner_title_input').value = e.currentTarget.dataset.title;
+    document.getElementById('bannerEditModal').style.display = 'block';
     });
-
     document.getElementById('editLogoBtn')?.addEventListener('click', () => { document.getElementById('logoEditModal').style.display = 'block'; });
-
     document.querySelectorAll('.edit-btn').forEach(button => {
-        button.addEventListener('click', () => {
-            const modal = document.getElementById('editModal');
-            document.getElementById('edit-post-id').value = button.dataset.id;
-            document.getElementById('edit-title').value = button.dataset.title;
-            document.getElementById('edit-content').value = button.dataset.content;
-            modal.style.display = 'block';
-            tinymce.init({
-                selector: '#edit-content',
-                height: 400,
-                plugins: 'autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table help wordcount',
-                toolbar: 'undo redo | blocks | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | image link | help',
-                images_upload_url: 'upload_image.php',
-                automatic_uploads: true,
-                file_picker_types: 'image',
-                images_upload_base_path: '/recept_app'
-            });
-        });
+    button.addEventListener('click', () => {
+    const modal = document.getElementById('editModal');
+    document.getElementById('edit-post-id').value = button.dataset.id;
+    document.getElementById('edit-title').value = button.dataset.title;
+    document.getElementById('edit-content').value = button.dataset.content;
+    modal.style.display = 'block';
+    tinymce.init({
+    selector: '#edit-content',
+            height: 400,
+            plugins: 'autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table help wordcount',
+            toolbar: 'undo redo | blocks | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | image link | help',
+            images_upload_url: 'upload_image.php',
+            automatic_uploads: true,
+            file_picker_types: 'image',
+            images_upload_base_path: '/recept_app'
     });
-
+    });
+    });
     document.querySelectorAll('.delete-btn').forEach(button => {
-        button.addEventListener('click', () => {
-            document.getElementById('delete-post-id').value = button.dataset.id;
-            document.getElementById('deleteModal').style.display = 'block';
-        });
+    button.addEventListener('click', () => {
+    document.getElementById('delete-post-id').value = button.dataset.id;
+    document.getElementById('deleteModal').style.display = 'block';
     });
-
+    });
     document.querySelectorAll('.send-email-btn').forEach(button => {
-        button.addEventListener('click', () => {
-            document.getElementById('email-to').value = button.dataset.email;
-            document.getElementById('emailModal').style.display = 'block';
-        });
+    button.addEventListener('click', () => {
+    document.getElementById('email-to').value = button.dataset.email;
+    document.getElementById('emailModal').style.display = 'block';
     });
-
+    });
     document.querySelectorAll('.delete-user-btn').forEach(button => {
-        button.addEventListener('click', () => {
-            document.getElementById('delete-user-id').value = button.dataset.id;
-            document.getElementById('delete-username').textContent = button.dataset.username;
-            document.getElementById('deleteUserModal').style.display = 'block';
-        });
+    button.addEventListener('click', () => {
+    document.getElementById('delete-user-id').value = button.dataset.id;
+    document.getElementById('delete-username').textContent = button.dataset.username;
+    document.getElementById('deleteUserModal').style.display = 'block';
     });
-    
+    });
     document.querySelectorAll('.report-user-btn').forEach(button => {
-        button.addEventListener('click', () => {
-            document.getElementById('reported-user-id').value = button.dataset.id;
-            document.getElementById('reportUserModal').style.display = 'block';
-        });
+    button.addEventListener('click', () => {
+    document.getElementById('reported-user-id').value = button.dataset.id;
+    document.getElementById('reportUserModal').style.display = 'block';
     });
-
+    });
     // --- 4. POST.PHP OLDAL NÉZETVÁLTÁSA ---
     const editPostBtnOnPage = document.getElementById('editPostBtn');
     const cancelEditBtnOnPage = document.getElementById('cancelEditBtn');
     const postView = document.getElementById('post-view');
     const postEdit = document.getElementById('post-edit');
     if (editPostBtnOnPage && postView && postEdit) {
-        editPostBtnOnPage.addEventListener('click', () => {
-            postView.style.display = 'none';
-            postEdit.style.display = 'block';
-        });
+    editPostBtnOnPage.addEventListener('click', () => {
+    postView.style.display = 'none';
+    postEdit.style.display = 'block';
+    });
     }
     if (cancelEditBtnOnPage && postView && postEdit) {
-        cancelEditBtnOnPage.addEventListener('click', () => {
-            postView.style.display = 'block';
-            postEdit.style.display = 'none';
-        });
+    cancelEditBtnOnPage.addEventListener('click', () => {
+    postView.style.display = 'block';
+    postEdit.style.display = 'none';
+    });
     }
-    
+
     // --- 5. AJAX-VEZÉRELT GOMBOK (KIEMELÉS, KÖVETÉS) ---
     document.querySelectorAll('.feature-toggle-btn').forEach(button => {
-        button.addEventListener('click', (e) => {
-            e.preventDefault();
-            const postId = button.dataset.id;
-            const formData = new FormData();
-            formData.append('post_id', postId);
-            fetch('toggle_feature.php', { method: 'POST', body: formData })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        button.classList.toggle('featured', data.new_status == 1);
-                        const postEntry = button.closest('.post-entry, .single-post, .post-card');
-                        if (postEntry) {
-                            postEntry.classList.toggle('kiemelt', data.new_status == 1);
-                        }
-                    } else {
-                        alert('Hiba: ' + (data.message || 'Ismeretlen hiba történt.'));
-                    }
-                });
-        });
-    });
-
-    document.getElementById('follow-toggle-btn')?.addEventListener('click', function() {
-        const button = this;
-        const userId = button.dataset.id;
-        const formData = new FormData();
-        formData.append('user_id', userId);
-        fetch('toggle_follow.php', { method: 'POST', body: formData })
-        .then(response => response.json())
-        .then(data => {
+    button.addEventListener('click', (e) => {
+    e.preventDefault();
+    const postId = button.dataset.id;
+    const formData = new FormData();
+    formData.append('post_id', postId);
+    fetch('toggle_feature.php', { method: 'POST', body: formData })
+            .then(response => response.json())
+            .then(data => {
             if (data.success) {
-                button.classList.toggle('following', data.is_following);
-            } else {
-                alert(data.message || 'Hiba történt.');
+            button.classList.toggle('featured', data.new_status == 1);
+            const postEntry = button.closest('.post-entry, .single-post, .post-card');
+            if (postEntry) {
+            postEntry.classList.toggle('kiemelt', data.new_status == 1);
             }
-        });
+            } else {
+            alert('Hiba: ' + (data.message || 'Ismeretlen hiba történt.'));
+            }
+            });
     });
-
+    });
+    document.getElementById('follow-toggle-btn')?.addEventListener('click', function() {
+    const button = this;
+    const userId = button.dataset.id;
+    const formData = new FormData();
+    formData.append('user_id', userId);
+    fetch('toggle_follow.php', { method: 'POST', body: formData })
+            .then(response => response.json())
+            .then(data => {
+            if (data.success) {
+            button.classList.toggle('following', data.is_following);
+            } else {
+            alert(data.message || 'Hiba történt.');
+            }
+            });
+    });
     // --- 6. ÁLTALÁNOS BEZÁRÁS LOGIKA ---
     const allModals = Array.from(document.querySelectorAll('.modal'));
     document.querySelectorAll('.close-btn, .cancel-btn').forEach(button => {
-        button.addEventListener('click', (e) => {
-            const modalToClose = e.target.closest('.modal');
-            if (modalToClose) {
-                modalToClose.style.display = 'none';
-                if (modalToClose.id === 'newPostModal') { tinymce.remove('#new-content-textarea'); }
-                if (modalToClose.id === 'editModal') { tinymce.remove('#edit-content'); }
-            }
-        });
+    button.addEventListener('click', (e) => {
+    const modalToClose = e.target.closest('.modal');
+    if (modalToClose) {
+    modalToClose.style.display = 'none';
+    if (modalToClose.id === 'newPostModal') { tinymce.remove('#new-content-textarea'); }
+    if (modalToClose.id === 'editModal') { tinymce.remove('#edit-content'); }
+    }
     });
-
+    });
     window.addEventListener('click', (event) => {
-        allModals.forEach(modal => {
-            if (event.target == modal) {
-                modal.style.display = 'none';
-                if (modal.id === 'newPostModal') { tinymce.remove('#new-content-textarea'); }
-                if (modal.id === 'editModal') { tinymce.remove('#edit-content'); }
-            }
-        });
-        const searchItem = document.querySelector('.menu-search-item');
-        if (searchItem && !searchItem.contains(event.target)) {
-            if (searchContainer?.classList.contains('active')) {
-                searchContainer.classList.remove('active');
-                if (searchBtn) { searchBtn.innerHTML = ICON_SEARCH; }
-            }
-            if (liveSearchResultsContainer) {
-                liveSearchResultsContainer.style.display = 'none';
-            }
-        }
+    allModals.forEach(modal => {
+    if (event.target == modal) {
+    modal.style.display = 'none';
+    if (modal.id === 'newPostModal') { tinymce.remove('#new-content-textarea'); }
+    if (modal.id === 'editModal') { tinymce.remove('#edit-content'); }
+    }
     });
-});
+    const searchItem = document.querySelector('.menu-search-item');
+    if (searchItem && !searchItem.contains(event.target)) {
+    if (searchContainer?.classList.contains('active')) {
+    searchContainer.classList.remove('active');
+    if (searchBtn) { searchBtn.innerHTML = ICON_SEARCH; }
+    }
+    if (liveSearchResultsContainer) {
+    liveSearchResultsContainer.style.display = 'none';
+    }
+    }
+    });
+    });
 </script>
+
+<div id="toast-notification">
+    <i class="fas fa-check-circle"></i>
+    <span id="toast-message"></span>
+</div>
+
+<div id="shopping-list-container" class="collapsed">
+    <div class="shopping-list-header">
+        <h3><i class="fas fa-shopping-basket"></i> Bevásárló listám</h3>
+        <span class="item-counter">0</span>
+    </div>
+    <div class="shopping-list-body">
+        <ul id="shopping-list-items">
+        </ul>
+        <button id="clear-list-btn">Lista törlése</button>
+    </div>
+</div>
 
 </body>
 </html>

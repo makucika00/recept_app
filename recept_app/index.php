@@ -3,15 +3,11 @@
 session_start();
 
 // Flash üzenetek kezelése
-$upload_message = null;
-$upload_message_type = null;
 if (isset($_SESSION['upload_error'])) {
-    $upload_message = $_SESSION['upload_error'];
-    $upload_message_type = 'error';
+    // Itt kezelhetnéd a hibaüzenet megjelenítését
     unset($_SESSION['upload_error']);
 } elseif (isset($_SESSION['upload_success'])) {
-    $upload_message = $_SESSION['upload_success'];
-    $upload_message_type = 'success';
+    // Itt kezelhetnéd a sikerüzenet megjelenítését
     unset($_SESSION['upload_success']);
 }
 
@@ -40,17 +36,20 @@ try {
     error_log("Hiba a beállítások lekérésekor: " . $e->getMessage());
 }
 
-// Bejegyzések lekérése a szerző nevével együtt
+// Legfrissebb receptek lekérése
+$user_id = $_SESSION['user_id'] ?? null;
 try {
-    $sql = "SELECT posts.*, users.username 
-            FROM posts 
-            LEFT JOIN users ON posts.author_id = users.id 
-            ORDER BY posts.created_at DESC";
+    $sql = "SELECT r.*, u.username, 
+            (SELECT COUNT(*) FROM user_cooked_recipes ucr WHERE ucr.recipe_id = r.id AND ucr.user_id = :user_id) as is_cooked
+            FROM recipes r
+            LEFT JOIN users u ON r.author_id = u.id 
+            ORDER BY r.created_at DESC
+            LIMIT 6";
     $stmt = $conn->prepare($sql);
-    $stmt->execute();
-    $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt->execute([':user_id' => $user_id]);
+    $recipes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    $posts = [];
+    $recipes = [];
 }
 
 require_once './header.php';
@@ -59,94 +58,66 @@ require_once './header.php';
 <header class="banner" style="background-image: url('<?php echo $banner_image_path; ?>');">
     <div class="overlay"></div>
     <h1><?php echo $banner_title; ?></h1>
-
     <?php if (isset($_SESSION['is_admin']) && $_SESSION['is_admin'] == 1): ?>
         <button id="editBannerBtn" class="action-btn banner-edit-btn" 
                 title="Banner szerkesztése" 
                 data-title="<?php echo htmlspecialchars($banner_title); ?>">
             <i class="fas fa-pencil-alt"></i>
         </button>
-        <?php endif; ?>
+    <?php endif; ?>
 </header>
 
 <div class="index-container">
     <div class="posts-header">
-        <h2>Friss bejegyzések</h2>
-<?php if (isset($_SESSION['user_id'])): ?>
-            <button id="openNewPostModalBtn" class="action-btn add-btn" title="Új bejegyzés létrehozása">
+        <h2>Legújabb Receptek</h2>
+        <?php if (isset($_SESSION['user_id'])): ?>
+            <a href="create_recipe.php" class="action-btn add-btn" title="Új recept létrehozása" style="text-decoration: none; display: flex; align-items: center; justify-content: center;">
                 <i class="fas fa-plus"></i>
-            </button>
+            </a>
         <?php endif; ?>
     </div>
 
     <div class="posts-container posts-grid-layout">
-        <?php if (empty($posts)): ?>
-            <p style="grid-column: 1 / -1;">Jelenleg nincsenek bejegyzések.</p>
+        <?php if (empty($recipes)): ?>
+            <p style="grid-column: 1 / -1;">Jelenleg nincsenek receptek.</p>
         <?php else: ?>
             <?php
             $random_sizes = [2, 1, 3, 1, 2, 1];
             $i = 0;
-            foreach ($posts as $post):
-                $cover_path = !empty($post['cover_image']) ? htmlspecialchars($post['cover_image']) : $logo_image_path;
-                $post_class = $post['is_featured'] ? 'post-card kiemelt' : 'post-card';
+            foreach ($recipes as $recipe):
+                $cover_path = !empty($recipe['cover_image']) ? htmlspecialchars($recipe['cover_image']) : $logo_image_path;
+                $post_class = $recipe['is_featured'] ? 'post-card kiemelt' : 'post-card';
                 $random_size = $random_sizes[$i % count($random_sizes)];
                 $i++;
                 ?>
-                <div class="<?php echo $post_class; ?> card-size-<?php echo $random_size; ?>">
-
-                    <div class="card-image-wrapper">
-                        <a href="post.php?id=<?php echo $post['id']; ?>" class="card-image-link">
-                            <div class="card-image" style="background-image: url('<?php echo $cover_path; ?>');"></div>
-                        </a>
-                    </div>
-
-                    <div class="card-info">
-                        <div class="card-admin-actions">
-                            <?php if (isset($_SESSION['is_admin']) && $_SESSION['is_admin'] == 1): ?>
-                                <button class="action-btn feature-toggle-btn <?php if ($post['is_featured']) echo 'featured'; ?>" 
-                                        data-id="<?php echo $post['id']; ?>" title="Kiemelés/Visszavonás">
-                                    <i class="fas fa-star"></i>
-                                </button>
-        <?php endif; ?>
-        <?php if (isset($_SESSION['user_id']) && (($_SESSION['is_admin'] ?? 0) == 1 || $_SESSION['user_id'] == $post['author_id'])): ?>
-                                <button class="action-btn edit-btn" 
-                                        data-id="<?php echo $post['id']; ?>" 
-                                        data-title="<?php echo htmlspecialchars($post['title']); ?>"
-                                        data-content="<?php echo htmlspecialchars($post['content']); ?>"
-                                        title="Szerkesztés">
-                                    <i class="fas fa-pencil-alt"></i>
-                                </button>
-                                <button class="action-btn delete-btn" data-id="<?php echo $post['id']; ?>" title="Törlés">
-                                    <i class="fas fa-times"></i>
-                                </button>
-                                <?php endif; ?>
+                <a href="post.php?id=<?php echo $recipe['id']; ?>" class="<?php echo $post_class; ?> card-size-<?php echo $random_size; ?> card-link">
+                    <?php if ($recipe['is_cooked']): ?>
+                        <div class="cooked-overlay">
+                            <div class="cooked-icon-circle"><i class="fas fa-check"></i></div>
                         </div>
-
-                        <?php if (!empty($post['username'])): ?>
-                            <div class="post-author">
-                                <i class="fas fa-user"></i>
-                                <a href="profile.php?id=<?php echo $post['author_id']; ?>">
-                            <?php echo htmlspecialchars($post['username']); ?>
-                                </a>
-                            </div>
-                        <?php endif; ?>
-
-                        <h3><a href="post.php?id=<?php echo $post['id']; ?>" class="post-title-link"><?php echo htmlspecialchars($post['title']); ?></a></h3>
-
-        <?php
-        $decoded_content = html_entity_decode($post['content']);
-        $plain_content = strip_tags($decoded_content);
-        $excerpt_length = 120;
-        $excerpt = (mb_strlen($plain_content) > $excerpt_length) ? mb_substr($plain_content, 0, $excerpt_length) . '...' : $plain_content;
-        ?>
-                        <p><?php echo htmlspecialchars($excerpt); ?></p>
-
-                        <a href="post.php?id=<?php echo $post['id']; ?>" class="read-more-link">Tovább olvasom →</a>
-
-                        <small>Publikálva: <?php echo date('Y. m. d.', strtotime($post['created_at'])); ?></small>
+                    <?php endif; ?>
+                    <div class="card-image-wrapper">
+                        <div class="card-image" style="background-image: url('<?php echo $cover_path; ?>');"></div>
                     </div>
-                </div>
-    <?php endforeach; ?>
+                    <div class="card-info">
+                        <h3><?php echo htmlspecialchars($recipe['title']); ?></h3>
+                        <div class="card-meta">
+                            <div class="card-prep-time">
+                                <i class="fas fa-clock"></i>
+                                <span><?php echo htmlspecialchars($recipe['prep_time'] ?? 'N/A'); ?> perc</span>
+                            </div>
+                            <div class="card-rating">
+                                <?php
+                                $avg_rating = round($recipe['avg_rating']);
+                                for ($i = 1; $i <= 5; $i++):
+                                    ?>
+                                    <i class="<?php echo ($i <= $avg_rating) ? 'fas fa-star' : 'far fa-star'; ?>"></i>
+        <?php endfor; ?>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            <?php endforeach; ?>
 <?php endif; ?>
     </div>
 </div>
