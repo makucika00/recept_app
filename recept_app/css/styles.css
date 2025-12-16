@@ -1,0 +1,2715 @@
+@font-face {
+    font-family: "Poppins";
+    src: url('../font/Poppins-Regular.ttf');
+}
+
+* {
+    font-family: Poppins, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding-top: 80px;
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+/* =================================
+   ÁLTALÁNOS TARTALOM KONTÉNEREK
+==================================== */
+.main-content-area {
+    padding: 20px;
+    max-width: 900px;
+    margin: 20px auto;
+}
+
+.index-container, .search-results-container {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+
+/* =================================
+   NAVIGÁCIÓS SÁV
+==================================== */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--primary-color, #5d8c61);
+    padding: 0 20px;
+    height: 80px;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+.logo-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.logo-image {
+    height: 50px;
+    width: auto;
+    display: block;
+}
+
+.page-edit-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.2em;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+}
+.page-edit-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.logo-edit-btn {
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    transform: translateY(-50%);
+    margin-left: 10px;
+    z-index: 2;
+    background-color: rgba(255, 255, 255, 0.2);
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+}
+
+.menu {
+    display: flex;
+    list-style: none;
+    align-items: center;
+}
+
+.menu li a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    padding: 14px 20px;
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+}
+
+.menu li a::after {
+    content: "";
+    position: absolute;
+    bottom: 8px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: white;
+    transition: width 0.3s ease;
+}
+
+.menu li a:hover::after {
+    width: 100%;
+}
+
+.button-link {
+    text-decoration: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    color: white;
+    background-color: transparent;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.button-link::after {
+    display: none !important;
+}
+
+.profile-icon:hover,
+.logout-btn:hover,
+.button-link:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.logout-btn i {
+    font-size: 1.2em;
+}
+
+
+/* =================================
+   KERESŐMEZŐ
+==================================== */
+.menu-search-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 5px;
+    transition: background-color 0.4s ease;
+}
+
+.search-input {
+    width: 0;
+    opacity: 0;
+    border: none;
+    outline: none;
+    background: none;
+    color: white;
+    padding: 0;
+    transition: width 0.4s ease, opacity 0.4s ease, padding 0.4s ease;
+    font-size: 14px;
+}
+
+.search-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+}
+.search-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.search-container.active {
+    background-color: white;
+}
+
+.search-container.active .search-input {
+    width: 200px;
+    opacity: 1;
+    padding: 0 10px;
+    color: #333;
+}
+
+.search-container.active .search-btn {
+    color: var(--primary-color, #5d8c61);
+}
+.search-container.active .search-btn:hover {
+    background-color: transparent;
+}
+
+.search-results-live {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    z-index: 1001;
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #f0f0f0;
+    margin-top: 10px;
+}
+.search-results-live a {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    color: #155724 !important;
+    text-decoration: none;
+    border-bottom: 1px solid #f5f5f5;
+    transition: background-color 0.2s ease;
+}
+.search-results-live a::before {
+    content: '\f002';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    margin-right: 12px;
+    color: var(--primary-color, #5d8c61);
+    font-size: 0.9em;
+}
+.search-results-live a:last-child { border-bottom: none; }
+.search-results-live a:hover { background-color: #f8f9fa; }
+.search-results-live a::after { display: none !important; }
+
+
+/* =================================
+   BANNER
+==================================== */
+.banner {
+    position: relative;
+    height: 400px;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+.banner::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+}
+.banner h1 {
+    position: relative;
+    font-size: 48px;
+    text-align: center;
+    z-index: 1;
+}
+.banner-edit-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 2;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    font-size: 16px;
+}
+
+
+/* =================================
+   MOZAIK ELRENDEZÉS (FŐOLDAL, KERESÉS)
+==================================== */
+.posts-header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 15px;
+    margin-bottom: 20px;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 20px 20px 0 20px;
+}
+.add-btn {
+    background-color: var(--accent-color, #4db057);
+    border: none;
+    color: white;
+}
+.add-btn:hover { background-color: #5d8c61; }
+
+.posts-grid-layout {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-auto-rows: 200px;
+    gap: 20px;
+    padding: 0 20px 20px 20px;
+    margin: 0 auto;
+    max-width: 1400px;
+}
+
+.post-card {
+    background-color: white;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.post-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+}
+
+.card-image-wrapper {
+    overflow: hidden;
+    height: 150px;
+    flex-shrink: 0;
+}
+.card-image-link { display: block; height: 100%; }
+.card-image {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+}
+.card-info {
+    padding: 15px;
+    flex-grow: 1;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+.card-info small { margin-top: auto; }
+.post-card.card-size-2 { grid-row-end: span 2; }
+.post-card.card-size-3 { grid-column: span 2; }
+.post-card.card-size-2 .card-image-wrapper { height: 60%; }
+.post-card.kiemelt {
+    grid-column: span 2;
+    grid-row-end: span 2;
+    background-color: var(--accent-color, #4db057);
+    color: white;
+    border: none;
+}
+.post-card.kiemelt .read-more-link { color: white; }
+.post-card.kiemelt h3 a, .post-card.kiemelt p, .post-card.kiemelt .post-author, .post-card.kiemelt small { color: white; }
+
+.post-author {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #888;
+    font-size: 0.9em;
+    margin-bottom: 10px;
+}
+.post-author i { font-size: 0.8em; }
+
+a.post-title-link { text-decoration: none; color: inherit; }
+a.post-title-link:hover { text-decoration: underline; }
+
+.read-more-link {
+    display: inline-block;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    color: var(--primary-color, #5d8c61);
+    font-weight: bold;
+    text-decoration: none;
+}
+.read-more-link:hover { text-decoration: underline; }
+
+.card-admin-actions, .admin-actions {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    gap: 5px;
+    z-index: 5;
+}
+.action-btn {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s;
+}
+.action-btn:hover { background-color: rgba(0, 0, 0, 0.8); }
+
+.feature-toggle-btn {
+    color: white;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+.feature-toggle-btn.featured {
+    background-color: #ffc107;
+    color: #333;
+}
+.feature-toggle-btn.featured .fa-star {
+    color: #333;
+}
+
+
+/* =================================
+   SINGLE POST OLDAL (MODERNIZÁLT)
+==================================== */
+.single-post {
+    background-color: white;
+    padding: 30px 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+}
+.single-post.kiemelt-post {
+    border-left: 5px solid var(--accent-color, #4db057);
+}
+.single-post-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+}
+.single-post-header h1 {
+    font-size: 2.8em;
+    margin-bottom: 15px;
+    line-height: 1.2;
+}
+.post-meta {
+    color: #888;
+    font-size: 0.9em;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+.post-meta span { display: flex; align-items: center; gap: 6px; }
+.admin-actions-single {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+.single-post-feature-image {
+    margin: 0 auto 30px auto;
+    max-width: 100%;
+}
+.single-post-feature-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 8px;
+}
+.post-content {
+    line-height: 1.8;
+    font-size: 1.1em;
+    color: #343a40;
+}
+.post-content p { margin-bottom: 1.5em; }
+.post-content h2, .post-content h3, .post-content h4 {
+    margin-top: 2em;
+    margin-bottom: 1em;
+    line-height: 1.3;
+}
+.post-content blockquote {
+    margin: 2em 0;
+    padding-left: 1.5em;
+    border-left: 4px solid var(--primary-color, #5d8c61);
+    font-style: italic;
+    color: #555;
+}
+.post-content ul, .post-content ol { margin-bottom: 1.5em; padding-left: 2em; }
+.post-content img { max-width: 100%; height: auto; border-radius: 8px; margin: 2em 0; }
+
+
+/* =================================
+   PROFIL OLDAL & USER MANAGEMENT
+==================================== */
+.profile-header {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    border-radius: 8px;
+    color: white;
+    margin-bottom: 30px;
+}
+.profile-picture-container {
+    position: relative;
+    cursor: pointer;
+    margin-right: 20px;
+}
+.profile-picture-container img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 3px solid white;
+    object-fit: cover;
+}
+.profile-picture-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5em;
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.profile-picture-container:hover .profile-picture-overlay { opacity: 1; }
+.profile-info h1 { margin: 0; font-size: 2.5em; }
+.profile-info p { margin: 0; font-size: 1.1em; opacity: 0.8; }
+.profile-body { display: flex; flex-wrap: wrap; gap: 30px; }
+.profile-posts-section { flex: 2; min-width: 300px; }
+.profile-edit-section { flex: 1; min-width: 280px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.07); }
+.profile-edit-section h2 { margin-top: 0; font-size: 1.5em; }
+
+.post-entry {
+    position: relative;
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    background: white;
+}
+.post-entry h3 { font-size: 1.1em; margin: 0 0 5px 0; }
+.post-entry small { color: #777; }
+
+.user-cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+.user-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.user-info h3 { margin-top: 0; }
+.user-info p { margin: 5px 0; color: #555; }
+.user-posts { margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee; }
+.user-posts h4 { font-size: 1em; margin-bottom: 10px; }
+.user-posts ul { list-style: none; padding-left: 0; }
+.user-posts li { margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; }
+.user-card-actions { margin-top: 15px; display: flex; justify-content: flex-end; gap: 10px; }
+
+
+/* =================================
+   KERESÉSI OLDAL
+==================================== */
+.results-header, .search-controls {
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+.results-header { margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+.results-header h1 { font-size: 2em; }
+.results-header p { color: #777; }
+
+.search-controls { background-color: #f0f2f5; padding: 15px; border-radius: 8px; margin-bottom: 30px; }
+.search-controls form { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+.filter-group { display: flex; align-items: center; gap: 8px; }
+.filter-btn { padding: 8px 15px; border-radius: 5px; background-color: var(--primary-color, #5d8c61); color: white; border: none; }
+.filter-btn:hover { background-color: #4a744e; }
+
+.form-group, .form-group-inline { margin-bottom: 15px; }
+.form-group-inline { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.form-group input, .form-group-inline input, .form-group textarea {
+    width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ccc;
+}
+
+
+/* =================================
+   MODÁLIS ABLAKOK
+==================================== */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1001;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.6);
+}
+.modal-content {
+    background-color: #fefefe;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+    border-radius: 8px;
+    position: relative;
+    animation: fadeIn 0.5s;
+}
+.close-btn { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
+.close-btn:hover, .close-btn:focus { color: black; }
+.modal-error-message {
+    display: none; background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; padding: 10px 15px; border-radius: 5px; margin-bottom: 15px; text-align: center; font-size: 0.9em;
+}
+.danger-btn { background-color: #dc3545; color: white; border: none; }
+.cancel-btn { background-color: #6c757d; color: white; border: none; }
+@keyframes fadeIn { from {opacity: 0; transform: translateY(-50px);} to {opacity: 1; transform: translateY(0);} }
+
+
+/* =================================
+   FOOTER
+==================================== */
+.footer {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    background-color: #222;
+    color: white;
+    padding: 40px 60px;
+    flex-wrap: wrap;
+    margin-top: 40px;
+}
+.footer div { width: 45%; }
+.footer h3 { margin-bottom: 15px; border-bottom: 2px solid #555; padding-bottom: 5px; }
+.footer p { margin-bottom: 8px; line-height: 1.5; color: #ccc; }
+#footer-edit-toggle.page-edit-btn { position: absolute; top: 10px; right: 10px; }
+
+
+/* =================================
+   EGYÉB
+==================================== */
+button { border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; }
+
+/* =================================
+   MOBILBARÁT NÉZET
+==================================== */
+@media (max-width: 768px) {
+    .footer { flex-direction: column; text-align: center; }
+    .footer div { width: 100%; margin-bottom: 20px; }
+    .profile-body { flex-direction: column; }
+    .navbar { padding: 0 10px; }
+    .menu { flex-grow: 1; justify-content: flex-end; }
+    .menu-search-item { order: -1; } /* A keresőt előrehozza mobilon */
+}
+
+.post-author a {
+    color: inherit; /* Örökli a szülő színét */
+    text-decoration: none;
+}
+.post-author a:hover {
+    text-decoration: underline;
+}
+
+.access-denied-box {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+}
+.access-denied-box h1 {
+    color: #dc3545;
+    margin-bottom: 15px;
+}
+.access-denied-actions {
+    margin-top: 25px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+/* Profil fejléc akció gombok */
+.profile-actions {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+}
+.profile-actions .action-btn {
+    padding: 8px 15px;
+    border-radius: 5px;
+    background: rgba(255,255,255,0.2);
+    color: white;
+    font-size: 0.9em;
+    width: auto; height: auto;
+}
+#follow-toggle-btn .unfollow-text { display: none; }
+#follow-toggle-btn:hover .follow-text { display: none; }
+#follow-toggle-btn:hover .unfollow-text { display: inline; }
+#follow-toggle-btn.following { background: rgba(255,255,255,0.4); }
+
+/* Admin statisztikai panel */
+.admin-stats-panel {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 30px;
+}
+.admin-stats-panel h3 { margin-top: 0; }
+.admin-stats-panel ul { list-style: none; padding: 0; }
+
+.modal-success-message {
+    display: none;
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: 0.9em;
+}
+
+/* =================================
+   KERESÉSI OLDAL - MODERN KÁRTYA NÉZET
+==================================== */
+
+/* A grid konténer felülírása a mozaik elrendezés helyett.
+   Reszponzív oszlopokat hoz létre, amelyek automatikusan kitöltik a rendelkezésre álló helyet. */
+.search-results-container .posts-grid-layout {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-auto-rows: auto; /* A sorok magassága a tartalomhoz igazodik */
+    align-items: stretch; /* A kártyák egyforma magasak lesznek egy soron belül */
+}
+
+/* Biztosítjuk, hogy egyik kártya se próbáljon meg több oszlopot vagy sort elfoglalni */
+.search-results-container .post-card,
+.search-results-container .post-card.card-size-2,
+.search-results-container .post-card.card-size-3,
+.search-results-container .post-card.kiemelt {
+    grid-column: auto;
+    grid-row-end: auto;
+}
+
+/* A kártyák új, modern és letisztult stílusa */
+.search-results-container .post-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Fontos az `align-items: stretch` miatt, kitölti a cellát */
+    background-color: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 12px; /* Lágyabb, modernebb sarkok */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.04);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.search-results-container .post-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+}
+
+/* A kártya képének egységesítése */
+.search-results-container .card-image-wrapper {
+    height: 200px; /* Fix, egységes képmagasság minden kártyán */
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+
+/* A kártya tartalmának finomhangolása */
+.search-results-container .card-info {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* A tartalom rész kitölti a rendelkezésre álló helyet */
+}
+
+.search-results-container .post-author {
+    margin-bottom: 12px;
+    font-size: 0.85em;
+    color: #6c757d;
+}
+
+.search-results-container .post-card h3 {
+    font-size: 1.25em;
+    line-height: 1.4;
+    margin-bottom: 10px;
+}
+
+.search-results-container .post-card p {
+    font-size: 0.95em;
+    color: #495057;
+    line-height: 1.6;
+    flex-grow: 1; /* A leírás kitölti a helyet a gombig */
+    margin-bottom: 15px;
+}
+
+.search-results-container .read-more-link {
+    margin-top: auto; /* A linket és a dátumot a kártya aljára tolja */
+}
+
+.search-results-container .card-info small {
+    color: #adb5bd;
+    font-size: 0.8em;
+}
+
+/* A kiemelt kártya új stílusa: nem nyúlik szét, csak egy finom keretet kap */
+.search-results-container .post-card.kiemelt {
+    border: 2px solid var(--accent-color, #4db057);
+    background-color: #fff; /* Visszaállítjuk az alap háttérszínt */
+    color: #333;
+}
+
+/* A kiemelt kártya szövegeinek színét is visszaállítjuk */
+.search-results-container .post-card.kiemelt h3 a,
+.search-results-container .post-card.kiemelt p,
+.search-results-container .post-card.kiemelt .post-author,
+.search-results-container .post-card.kiemelt small {
+    color: inherit;
+}
+
+/* =================================
+   FŐOLDAL - KIEMELT BEJEGYZÉS MODERN NÉZET
+==================================== */
+
+/* Felülírjuk a kiemelt kártya stílusát a főoldalon, hogy a keresőhöz hasonlóan körvonalas legyen,
+   de a mozaik elrendezésbeli mérete (grid-column, grid-row-end) megmarad. */
+.index-container .post-card.kiemelt {
+    background-color: #ffffff; /* Visszaállítjuk a fehér hátteret a zöld helyett */
+    border: 2px solid var(--accent-color, #4db057); /* Hozzáadjuk a modern, színes körvonalat */
+    color: #333; /* Visszaállítjuk az alapértelmezett sötét szövegszínt */
+}
+
+/* A kiemelt kártyán belüli elemek (cím, szöveg, stb.) szövegszínét is visszaállítjuk a fehérről */
+.index-container .post-card.kiemelt .read-more-link,
+.index-container .post-card.kiemelt h3 a,
+.index-container .post-card.kiemelt p,
+.index-container .post-card.kiemelt .post-author,
+.index-container .post-card.kiemelt small {
+    color: inherit; /* Örökölje a szülő (.post-card) szövegszínét, ami a fent beállított #333 lesz */
+}
+
+/* A "Tovább olvasom" link színét expliciten beállítjuk a témának megfelelőre,
+   hogy ne legyen fekete, hanem az oldal fő zöld színe. */
+.index-container .post-card.kiemelt .read-more-link {
+    color: var(--primary-color, #5d8c61);
+}
+
+/* =================================
+   RECEPT LÉTREHOZÓ VARÁZSLÓ
+==================================== */
+.recipe-wizard-container {
+    background-color: white;
+    padding: 30px 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+}
+
+.wizard-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.wizard-header h1 {
+    font-size: 2.2em;
+    margin-bottom: 10px;
+}
+
+.wizard-progress {
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.progress-bar-container {
+    flex-grow: 1;
+    height: 10px;
+    background-color: #e9ecef;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%; /* Ezt a JS fogja dinamikusan változtatni */
+    background-color: var(--primary-color, #5d8c61);
+    border-radius: 5px;
+    transition: width 0.4s ease-in-out;
+}
+
+.step-counter {
+    font-weight: bold;
+    color: #555;
+    font-size: 0.9em;
+}
+
+.wizard-step {
+    display: none; /* Alapból minden lépés rejtett */
+    animation: fadeIn 0.5s;
+}
+
+.wizard-step.active {
+    display: block; /* Az aktív lépés látható */
+}
+
+.wizard-navigation {
+    margin-top: 25px;
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+
+/* Ha csak egy gomb van (pl. Tovább az első lépésnél), akkor jobbra igazítjuk */
+.wizard-navigation.justify-end {
+    justify-content: flex-end;
+}
+
+
+.wizard-navigation .btn {
+    padding: 10px 25px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    /* ÚJ TULAJDONSÁGOK: */
+    display: inline-flex;
+    align-items: center;
+    gap: 8px; /* Térköz a szöveg és az ikon között */
+}
+
+.wizard-next-btn, .wizard-navigation [type="submit"] {
+    background-color: var(--accent-color, #4db057);
+    color: white !important;
+}
+.wizard-next-btn:hover, .wizard-navigation [type="submit"]:hover {
+    opacity: 0.9;
+}
+
+.wizard-prev-btn {
+    background-color: #6c757d;
+    color: white;
+}
+.wizard-prev-btn:hover {
+    background-color: #5a6268;
+}
+
+/* A fadeIn animáció definíciója */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* =================================
+   ŰRLAP VALIDÁCIÓS STÍLUSOK
+==================================== */
+.form-control.invalid-field {
+    border-color: #dc3545; /* Piros keret a hibás mezőnek */
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25); /* Finom piros aura fókusz esetén */
+}
+
+/* A varázsló 2. lépésének egyedi stílusa */
+
+/* Módosított kód */
+.form-row-centered {
+    display: flex;
+    justify-content: center;
+    gap: 30px; /* Növeltük a térközt a jobb szétválasztás érdekében */
+    align-items: flex-start;
+}
+
+/* Külön méretet adunk az első és második mezőnek */
+.form-row-centered .form-group:nth-child(1) { /* Elkészítési idő */
+    max-width: 160px;
+    width: 100%;
+}
+.form-row-centered .form-group:nth-child(2) { /* Adagok száma */
+    max-width: 120px;
+    width: 100%;
+}
+
+/* Az input mező és a 'perc' felirat stílusai */
+.input-with-unit {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Térköz a mező és a szöveg között */
+}
+
+.input-with-unit input {
+    flex-grow: 1; /* Az input kitölti a rendelkezésre álló helyet */
+}
+
+.input-with-unit span {
+    color: #555;
+    font-weight: 500;
+}
+
+/* =================================
+   MODERN BEVITELI MEZŐK A VARÁZSLÓBAN
+==================================== */
+
+/* Az alap stílus a varázsló összes beviteli mezejére (text, number, textarea) */
+.recipe-wizard-container .form-control {
+    background-color: #f8f9fa;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    padding: 12px 15px; /* Kényelmesebb belső térköz */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    width: 100%; /* Fontos, hogy kitöltse a rendelkezésre álló helyet */
+}
+
+/* Fókusz állapot minden mezőre */
+.recipe-wizard-container .form-control:focus {
+    outline: none;
+    border-color: var(--primary-color, #5d8c61);
+    box-shadow: 0 0 10px rgba(93, 140, 97, 0.2);
+}
+
+/* Kifejezetten a szám mezők stílusai (szöveg középre, nagyobb betűméret) */
+.recipe-wizard-container .form-control[type="number"] {
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: var(--primary-color, #5d8c61);
+}
+
+/* Eltüntetjük a böngésző alapértelmezett fel/le nyilait a szám mezőkből */
+.recipe-wizard-container .form-control[type="number"]::-webkit-outer-spin-button,
+.recipe-wizard-container .form-control[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.recipe-wizard-container .form-control[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* Egyedi stílus a fájl feltöltő mezőnek, hogy illeszkedjen a dizájnba */
+.recipe-wizard-container .form-control[type="file"] {
+    padding: 10px;
+    font-size: 0.9em;
+}
+
+.recipe-wizard-container .form-control[type="file"]::file-selector-button {
+    margin-right: 15px;
+    border: none;
+    background: var(--primary-color, #5d8c61);
+    padding: 8px 12px;
+    border-radius: 6px;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color .2s ease-in-out;
+}
+
+.recipe-wizard-container .form-control[type="file"]::file-selector-button:hover {
+    background: #4a744e;
+}
+
+/* =================================
+   HOZZÁVALÓK SZEKCIÓ A VARÁZSLÓBAN
+==================================== */
+.ingredients-list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Térköz a sorok között */
+    margin-bottom: 20px;
+}
+
+.ingredient-row {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Térköz az oszlopok között */
+}
+
+.ingredient-row input[name^="quantity"] {
+    flex: 0 0 80px; /* Fix 80px szélesség */
+}
+
+.ingredient-row select[name^="unit"] {
+    flex: 0 0 120px; /* Fix 120px szélesség */
+}
+
+.ingredient-row input[name^="ingredient_name"] {
+    flex: 1 1 auto; /* A maradék helyet kitölti */
+}
+
+.remove-ingredient-btn {
+    flex-shrink: 0;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    color: #dc3545;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border-radius: 50%;
+    font-size: 1em;
+}
+.remove-ingredient-btn:hover {
+    background-color: #dc3545;
+    color: white;
+}
+
+.add-ingredient-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #e9ecef;
+    border: 2px dashed #ced4da;
+    color: #495057;
+    font-weight: bold;
+    font-size: 1em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.add-ingredient-btn:hover {
+    background-color: #dde2e7;
+    border-color: #adb5bd;
+    color: white;
+}
+
+/* =================================
+   MODERN LEGÖRDÜLŐ MENÜ (SELECT) A VARÁZSLÓBAN
+==================================== */
+
+.ingredient-row .form-control[name^="unit"] {
+    /* Eltüntetjük a böngésző alapértelmezett kinézetét */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+
+    /* Egyedi lenyíló nyíl hozzáadása háttérképként (SVG) */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right .75rem center;
+    background-size: 16px 12px;
+
+    /* Igazítjuk a belső térközt, hogy a szöveg ne csússzon a nyíl alá */
+    padding-right: 30px !important;
+}
+
+/* Fókusz állapot a legördülő menün, hogy illeszkedjen a többihez */
+.ingredient-row .form-control[name^="unit"]:focus {
+    outline: none;
+    border-color: var(--primary-color, #5d8c61);
+    box-shadow: 0 0 10px rgba(93, 140, 97, 0.2);
+}
+
+/* =================================
+   "RÁZÁS" ANIMÁCIÓ A VALIDÁCIÓHOZ
+==================================== */
+.shake-animation {
+    animation: shake 0.5s;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+/* =================================
+   ELKÉSZÍTÉSI LÉPÉSEK SZEKCIÓ A VARÁZSLÓBAN
+==================================== */
+.instructions-list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Térköz a lépések között */
+    margin-bottom: 20px;
+}
+
+.instruction-step-row {
+    display: flex;
+    align-items: flex-start; /* A sorszám a textarea tetejéhez igazodik */
+    gap: 15px;
+}
+
+.instruction-step-row .step-number {
+    flex-shrink: 0;
+    font-size: 2em;
+    font-weight: bold;
+    color: var(--primary-color, #5d8c61);
+    width: 40px;
+    text-align: center;
+    padding-top: 5px;
+}
+
+.instruction-step-row textarea {
+    flex-grow: 1;
+    resize: vertical; /* Csak függőlegesen átméretezhető */
+    min-height: 80px;
+}
+
+/* A törlés gomb igazítása a textarea-hoz */
+.instruction-step-row .remove-ingredient-btn {
+    margin-top: 5px;
+}
+
+/* =================================
+   RECEPT MEGJELENÍTŐ OLDAL (POST.PHP)
+==================================== */
+.recipe-details-grid {
+    display: grid;
+    grid-template-columns: 300px 1fr; /* Kétoszlopos elrendezés: hozzávalók balra, leírás jobbra */
+    gap: 40px;
+    margin-top: 30px;
+}
+
+.ingredients-section h2, .instructions-section h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.5em;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Hozzávalók lista */
+.ingredients-list {
+    list-style: none;
+    padding: 0;
+}
+.ingredients-list li {
+    display: flex;
+    padding: 10px 0;
+    border-bottom: 1px solid #f5f5f5;
+    font-size: 1.05em;
+}
+.ingredients-list .quantity {
+    font-weight: bold;
+    margin-right: 5px;
+    width: 40px;
+    flex-shrink: 0;
+}
+.ingredients-list .unit {
+    margin-right: 10px;
+    color: #555;
+}
+
+/* Elkészítés lista */
+.instructions-list {
+    list-style: none;
+    padding: 0;
+    counter-reset: instructions-counter; /* Számláló beállítása */
+}
+.instructions-list li {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 25px;
+    counter-increment: instructions-counter; /* Számláló növelése */
+}
+.instructions-list li::before {
+    content: counter(instructions-counter); /* Számláló megjelenítése */
+    font-size: 1.8em;
+    font-weight: bold;
+    color: var(--primary-color, #5d8c61);
+    margin-right: 15px;
+    min-width: 30px;
+    text-align: right;
+}
+.instructions-list .instruction-step p {
+    margin: 0;
+    line-height: 1.8;
+}
+
+/* Reszponzív nézet mobilra */
+@media (max-width: 768px) {
+    .recipe-details-grid {
+        grid-template-columns: 1fr; /* Mobilon egy oszlopba rendezzük */
+    }
+}
+
+/* =================================
+   KERESÉSI OLDAL ÉS RECEPT LISTA - KÁRTYA NÉZET
+==================================== */
+
+/* A grid konténer felülírása a mozaik elrendezés helyett */
+.search-results-container .posts-grid-layout,
+.all-recipes-container .posts-grid-layout {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-auto-rows: auto;
+    align-items: stretch;
+}
+
+/* Az egyes kártyák felülírása, hogy ne nyúljanak át több soron/oszlopon */
+.search-results-container .post-card,
+.search-results-container .post-card.card-size-2,
+.search-results-container .post-card.card-size-3,
+.search-results-container .post-card.kiemelt,
+.all-recipes-container .post-card,
+.all-recipes-container .post-card.card-size-2,
+.all-recipes-container .post-card.card-size-3,
+.all-recipes-container .post-card.kiemelt {
+    grid-column: auto;
+    grid-row-end: auto;
+}
+
+/* Modernizált kártya kinézet */
+.search-results-container .post-card,
+.all-recipes-container .post-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.04);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.search-results-container .post-card:hover,
+.all-recipes-container .post-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+}
+
+/* Kártya kép konténer */
+.search-results-container .card-image-wrapper,
+.all-recipes-container .card-image-wrapper {
+    height: 200px;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+
+/* Kártya tartalom */
+.search-results-container .card-info,
+.all-recipes-container .card-info {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.search-results-container .post-author,
+.all-recipes-container .post-author {
+    margin-bottom: 12px;
+    font-size: 0.85em;
+    color: #6c757d;
+}
+
+.search-results-container .post-card h3,
+.all-recipes-container .post-card h3 {
+    font-size: 1.25em;
+    line-height: 1.4;
+    margin-bottom: 10px;
+}
+
+.search-results-container .post-card p,
+.all-recipes-container .post-card p {
+    font-size: 0.95em;
+    color: #495057;
+    line-height: 1.6;
+    flex-grow: 1;
+    margin-bottom: 15px;
+}
+
+.search-results-container .read-more-link,
+.all-recipes-container .read-more-link {
+    margin-top: auto;
+    margin-bottom: 10px;
+}
+
+.search-results-container .card-info small,
+.all-recipes-container .card-info small {
+    margin-top: 0;
+    color: #adb5bd;
+    font-size: 0.8em;
+}
+
+/* A kiemelt kártya jelzése */
+.search-results-container .post-card.kiemelt,
+.all-recipes-container .post-card.kiemelt {
+    border: 2px solid var(--accent-color, #4db057);
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+.search-results-container .post-card.kiemelt h3 a,
+.search-results-container .post-card.kiemelt p,
+.search-results-container .post-card.kiemelt .post-author,
+.search-results-container .post-card.kiemelt small,
+.all-recipes-container .post-card.kiemelt h3 a,
+.all-recipes-container .post-card.kiemelt p,
+.all-recipes-container .post-card.kiemelt .post-author,
+.all-recipes-container .post-card.kiemelt small {
+    color: inherit;
+}
+
+/* =================================
+   MODERN SZŰRŐ ÉS RENDEZŐ SÁV
+==================================== */
+
+/* A szűrő konténerének átalakítása, hogy hasonlítson a varázslóra */
+.search-controls {
+    background-color: #ffffff; /* Fehér háttér */
+    padding: 20px 25px; /* Nagyobb belső térköz */
+    border-radius: 12px; /* Lágyabb sarkok */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05); /* Finom árnyék */
+    margin-bottom: 30px;
+    border: 1px solid #e9ecef;
+}
+
+.search-controls form {
+    display: flex;
+    align-items: center;
+    gap: 25px; /* Nagyobb térköz az elemek között */
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* A címkék (label) stílusa */
+.search-controls label {
+    font-weight: 500;
+    color: #495057;
+    cursor: pointer;
+}
+
+/* Modern legördülő menü (select) */
+.search-controls select {
+    /* Alap stílusok, mint a varázslóban */
+    background-color: #f8f9fa;
+    border: 2px solid #f8f9fa;
+    border-radius: 8px;
+    padding: 10px 30px 10px 15px; /* Jobb oldalon több hely a nyílnak */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    font-weight: 500;
+    
+    /* Egyedi lenyíló nyíl */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right .75rem center;
+    background-size: 16px 12px;
+}
+
+.search-controls select:focus {
+    outline: none;
+    border-color: var(--primary-color, #5d8c61);
+    box-shadow: 0 0 10px rgba(93, 140, 97, 0.2);
+}
+
+/* Modern checkbox */
+.search-controls input[type="checkbox"] {
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: #fff;
+    margin: 0;
+    font: inherit;
+    color: currentColor;
+    width: 1.15em;
+    height: 1.15em;
+    border: 2px solid #ced4da;
+    border-radius: 4px;
+    transform: translateY(-0.075em);
+    display: grid;
+    place-content: center;
+    cursor: pointer;
+}
+
+.search-controls input[type="checkbox"]::before {
+    content: "";
+    width: 0.65em;
+    height: 0.65em;
+    transform: scale(0);
+    transition: 120ms transform ease-in-out;
+    box-shadow: inset 1em 1em var(--primary-color, #5d8c61);
+    transform-origin: bottom left;
+    clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+}
+
+.search-controls input[type="checkbox"]:checked {
+    border-color: var(--primary-color, #5d8c61);
+}
+
+.search-controls input[type="checkbox"]:checked::before {
+    transform: scale(1);
+}
+
+/* A "Szűrés és Rendezés" gomb modernizálása */
+.search-controls .filter-btn {
+    background-color: var(--accent-color, #4db057);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ===================================================
+   RECEPT MEGJELENÍTŐ OLDAL (POST.PHP) - MODERNIZÁLT
+====================================================== */
+
+/* A régi fejléc stílusának egyszerűsítése */
+.single-post-header {
+    text-align: center;
+    margin-bottom: 25px; /* Csökkentett alsó margó */
+    padding-bottom: 0;   /* Padding eltávolítása */
+}
+.single-post-header h1 {
+    font-size: 3.2em; /* Nagyobb, hangsúlyosabb cím */
+    margin-bottom: 10px;
+}
+.post-meta { /* Eltávolítjuk a régi meta adat sort */
+    display: none;
+}
+/* Új stílus a szerzőnek és dátumnak */
+.post-byline {
+    font-size: 0.9em;
+    color: #888;
+    margin-bottom: 20px;
+}
+.post-byline a {
+    color: #4db057;
+    text-decoration: none;
+    font-weight: 500;
+}
+.post-byline a:hover {
+    text-decoration: underline;
+}
+.post-byline span {
+    margin: 0 5px;
+}
+
+/* Új stílusok a recept statisztikáknak (idő, adag) */
+.recipe-stats {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    padding: 20px 0;
+    margin-bottom: 30px;
+}
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.stat-item .stat-value {
+    font-size: 2em; /* Nagyobb számok */
+    font-weight: bold;
+    color: var(--primary-color, #5d8c61);
+    line-height: 1.1;
+}
+.stat-item .stat-label {
+    font-size: 0.9em;
+    color: #777;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.stat-divider {
+    width: 1px;
+    height: 40px;
+    background-color: #e0e0e0; /* Halvány elválasztó vonal */
+}
+.single-post-feature-image {
+    margin-bottom: 30px;
+}
+
+/* A hozzávalók és elkészítés szekció (változatlan) */
+.recipe-details-grid {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 40px;
+    margin-top: 30px;
+}
+
+.ingredients-section h2, .instructions-section h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.5em;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.ingredients-list {
+    list-style: none;
+    padding: 0;
+}
+.ingredients-list li {
+    display: flex;
+    padding: 10px 0;
+    border-bottom: 1px solid #f5f5f5;
+    font-size: 1.05em;
+}
+.ingredients-list .quantity { font-weight: bold; margin-right: 5px; width: 40px; flex-shrink: 0; }
+.ingredients-list .unit { margin-right: 10px; color: #555; }
+
+.instructions-list { list-style: none; padding: 0; counter-reset: instructions-counter; }
+.instructions-list li { display: flex; align-items: flex-start; margin-bottom: 25px; counter-increment: instructions-counter; }
+.instructions-list li::before {
+    content: counter(instructions-counter);
+    font-size: 1.8em;
+    font-weight: bold;
+    color: var(--primary-color, #5d8c61);
+    margin-right: 15px;
+    min-width: 30px;
+    text-align: right;
+}
+.instructions-list .instruction-step p { margin: 0; line-height: 1.8; }
+
+/* Reszponzív nézet mobilra */
+@media (max-width: 768px) {
+    .single-post-header h1 { font-size: 2.5em; }
+    .recipe-details-grid { grid-template-columns: 1fr; }
+}
+
+/* A borítókép konténerének és a képnek a stílusai */
+.single-post-feature-image {
+    margin-bottom: 30px;
+    max-height: 500px; /* Itt beállítjuk a maximális magasságot */
+    overflow: hidden; /* Elrejti a kép esetlegesen túlnyúló részeit */
+    border-radius: 12px; /* Lekerekítjük a konténer sarkait is */
+}
+
+.single-post-feature-image img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover; /* Ez a kulcs: a kép kitölti a teret torzítás nélkül, levágva a felesleget */
+}
+
+/* ===================================================
+   RECEPT MEGJELENÍTŐ OLDAL (POST.PHP) - MODERNIZÁLT
+====================================================== */
+
+/* Fejléc stílusok (változatlan) */
+.single-post-header { text-align: center; margin-bottom: 25px; padding-bottom: 0; }
+.single-post-header h1 { font-size: 3.2em; margin-bottom: 10px; }
+.post-meta { display: none; }
+.post-byline { font-size: 0.9em; color: #888; margin-bottom: 20px; }
+.post-byline a { color: inherit; text-decoration: none; font-weight: 500; }
+.post-byline a:hover { text-decoration: underline; }
+.post-byline span { margin: 0 5px; }
+
+/* Statisztikák stílusai (változatlan) */
+.recipe-stats { display: flex; justify-content: center; align-items: center; gap: 30px; padding: 20px 0; margin-bottom: 30px; }
+.stat-item { display: flex; flex-direction: column; align-items: center; }
+.stat-item .stat-value { font-size: 2em; font-weight: bold; color: var(--primary-color, #5d8c61); line-height: 1.1; }
+.stat-item .stat-label { font-size: 0.9em; color: #777; text-transform: uppercase; letter-spacing: 0.5px; }
+.stat-divider { width: 1px; height: 40px; background-color: #e0e0e0; }
+
+/* Kép stílusai (változatlan) */
+.single-post-feature-image { margin-bottom: 40px; max-height: 500px; overflow: hidden; border-radius: 12px; }
+.single-post-feature-image img { width: 100%; height: 100%; display: block; object-fit: cover; }
+
+/* Töröljük a régi grid elrendezést */
+.recipe-details-grid {
+    display: block; /* Visszaállítjuk alapértelmezettre */
+}
+
+/* ÚJ STÍLUSOK a hozzávalók kiemelt dobozához */
+.ingredients-section-wrapper {
+    margin-bottom: 40px;
+}
+.ingredients-section {
+    background-color: #f8f9fa; /* Világosszürke háttér */
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 30px;
+    max-width: 700px; /* Limitáljuk a maximális szélességet */
+    margin: 0 auto; /* Automatikus margóval középre igazítjuk */
+}
+
+/* Hozzávalók és elkészítés címének stílusa */
+.ingredients-section h2, .instructions-section h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.8em; /* Kicsit nagyobb cím */
+    padding-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--primary-color, #5d8c61);
+    border-bottom: none; /* A vonalat eltávolítjuk, letisztultabb lesz */
+}
+
+/* Hozzávalók lista */
+.ingredients-list { 
+    list-style: none; 
+    padding: 0; 
+    column-count: 2; 
+    column-gap: 40px; 
+} 
+
+.ingredients-list li { 
+    display: flex; 
+    align-items: center; /* Függőlegesen középre igazítja az elemeket */
+    padding: 10px 0; 
+    font-size: 1.05em; 
+    border-bottom: none; /* A halvány elválasztó vonal eltávolítása */
+}
+
+.ingredients-list .quantity { 
+    font-size: 1.3em; /* Nagyobb betűméret */
+    font-weight: bold; 
+    margin-right: 8px; /* Kisebb igazítás a térközön */
+    width: 50px; /* Kicsit több hely a nagyobb számnak */
+    flex-shrink: 0; 
+    color: var(--primary-color, #5d8c61); /* A fő téma színének alkalmazása */
+    text-align: right; /* Jobbra igazítás a letisztultabb kinézetért */
+}
+
+.ingredients-list .unit { 
+    margin-right: 10px; 
+    color: #555; 
+}
+
+.ingredients-list .name { 
+    flex-grow: 1; 
+}
+
+/* Elkészítési lépések (lényegében változatlan, de a cím stílusa frissül) */
+.instructions-section {
+    margin-top: 20px;
+}
+/* ===================================================
+   MODERN ELKÉSZÍTÉSI LÉPÉSEK
+====================================================== */
+
+/* A régi lista stílusainak eltávolítása */
+.instructions-list { display: none; }
+
+/* Az új, modern lista konténere */
+.instructions-list-modern {
+    display: flex;
+    flex-direction: column;
+    gap: 25px; /* Térköz a lépések között */
+}
+
+.instruction-step-modern {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid transparent;
+    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Hover effektus */
+.instruction-step-modern:hover {
+    background-color: #f8f9fa;
+    border-color: #e9ecef;
+}
+.instruction-step-modern:focus {
+    outline: none;
+    border-color: var(--primary-color, #5d8c61);
+}
+
+/* A nagy sorszám stílusa */
+.step-number-modern {
+    flex-shrink: 0;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+.step-number-modern span {
+    font-size: 3.5em;
+    font-weight: bold;
+    color: #e0e0e0; /* Halvány szürke alapszín */
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+/* A pipa ikon alapból rejtett */
+.step-number-modern .check-icon {
+    position: absolute;
+    font-size: 2.5em;
+    color: var(--accent-color, #4db057);
+    transform: scale(0);
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* A lépés leírásának stílusa */
+.step-description p {
+    margin: 0;
+    padding-top: 5px; /* Igazítás a nagy számhoz */
+    font-size: 1.1em;
+    line-height: 1.8;
+    color: #333;
+    transition: color 0.3s ease, opacity 0.3s ease;
+}
+
+/* A "KÉSZ" állapot stílusai */
+.instruction-step-modern.completed {
+    background-color: #f0fdf4;
+}
+.instruction-step-modern.completed .step-number-modern span {
+    transform: scale(0);
+    opacity: 0;
+}
+.instruction-step-modern.completed .step-number-modern .check-icon {
+    transform: scale(1);
+    opacity: 1;
+}
+.instruction-step-modern.completed .step-description {
+    opacity: 0.6;
+}
+.instruction-step-modern.completed .step-description p {
+    text-decoration: line-through;
+}
+
+/* Reszponzív nézet mobilra */
+@media (max-width: 768px) {
+    .single-post-header h1 { font-size: 2.5em; }
+    .ingredients-list { column-count: 1; } /* Mobilon visszaállítjuk egy oszlopra a hozzávalókat */
+}
+
+/* ===================================================
+   ADAG-KALKULÁTOR (SERVINGS STEPPER)
+====================================================== */
+.servings-calculator .stat-label {
+    margin-bottom: 5px; /* Kicsit több hely a címke és a léptető között */
+}
+.servings-stepper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    overflow: hidden;
+}
+.servings-stepper .stat-value {
+    padding: 0 15px;
+    border-left: 1px solid #e9ecef;
+    border-right: 1px solid #e9ecef;
+}
+.stepper-btn {
+    border: none;
+    background-color: transparent;
+    color: var(--primary-color, #5d8c61);
+    font-size: 1.8em;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0 15px;
+    transition: background-color 0.2s ease;
+}
+.stepper-btn:hover {
+    background-color: #e9ecef;
+}
+
+/* =================================
+   "ELKÉSZÍTETTEM" FUNKCIÓ STÍLUSAI
+==================================== */
+/* Pipa a recept címe mellett */
+.cooked-checkmark-title {
+    color: var(--accent-color, #4db057);
+    font-size: 0.7em;
+    vertical-align: super;
+}
+
+/* "Elkészítettem" gomb */
+.cooked-action-wrapper {
+    text-align: center;
+    margin: 40px 0 20px 0;
+    border-top: 1px solid #eee;
+    padding-top: 30px;
+}
+.cooked-btn {
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    color: #333;
+    padding: 12px 25px;
+    font-size: 1.1em;
+    font-weight: bold;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+}
+.cooked-btn .icon-wrapper { position: relative; width: 20px; height: 20px; margin-right: 10px; }
+.cooked-btn .plus-icon, .cooked-btn .check-icon {
+    position: absolute;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+.cooked-btn .check-icon { transform: scale(0); opacity: 0; }
+.cooked-btn:hover { background-color: #e9ecef; color: white; }
+
+/* A gomb "elkészített" állapota */
+.cooked-btn.cooked {
+    background-color: var(--accent-color, #4db057);
+    color: white;
+    border-color: var(--accent-color, #4db057);
+}
+.cooked-btn.cooked .plus-icon { transform: scale(0); opacity: 0; }
+.cooked-btn.cooked .check-icon { transform: scale(1); opacity: 1; }
+
+/* Átfedés a kártyákon */
+.post-card { position: relative; } /* Fontos, hogy az overlay pozicionálható legyen */
+.cooked-overlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(220, 252, 224, 0.8);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    pointer-events: none; /* Ne akadályozza a linkre kattintást */
+}
+.cooked-icon-circle {
+    width: 80px;
+    height: 80px;
+    background-color: var(--accent-color, #4db057);
+    border-radius: 50%;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3em;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* ===================================================
+   EGYSÉGES, LETISZTULT RECEPT KÁRTYA NÉZET
+====================================================== */
+
+/* A kártya egyetlen kattintható linkké alakítása */
+.card-link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+.card-link h3 {
+    color: #333;
+}
+
+/* Grid konténer felülírása (kártya nézetben) */
+.search-results-container .posts-grid-layout,
+.all-recipes-container .posts-grid-layout {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-auto-rows: auto;
+    align-items: stretch;
+}
+
+/* Kártyák felülírása (kártya nézetben) */
+.search-results-container .post-card,
+.all-recipes-container .post-card {
+    grid-column: auto !important;
+    grid-row-end: auto !important;
+}
+
+/* Általános kártya stílus */
+.post-card {
+    background-color: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.04);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden; /* Fontos az overlay és a kép miatt */
+}
+.post-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+}
+.post-card.kiemelt { /* A kiemelt kártya körvonala */
+    border: 2px solid var(--accent-color, #4db057);
+}
+
+/* Kártya kép */
+.card-image-wrapper {
+    height: 200px;
+}
+
+/* Kártya tartalom */
+.card-info {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Ez tolja le a card-meta részt */
+}
+.card-info h3 {
+    font-size: 1.2em;
+    line-height: 1.4;
+    margin-bottom: 10px;
+}
+
+/* Új metaadatok sáv (idő és csillagok) */
+.card-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto; /* Ez tolja le a sávot a kártya aljára */
+    padding-top: 10px;
+    font-size: 0.9em;
+    color: #555;
+}
+.card-prep-time {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.card-rating {
+    color: #ffc107; /* Csillagok színe */
+}
+
+/* =================================
+   CSILLAGOS ÉRTÉKELÉS STÍLUSAI
+==================================== */
+.rating-display-wrapper {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: 20px;
+    vertical-align: middle;
+}
+.rating-display-wrapper .stars-display {
+    color: #ffc107;
+    font-size: 1.1em;
+    cursor: pointer;
+}
+.rating-display-wrapper .stars-display i {
+    transition: transform 0.2s ease;
+}
+.rating-display-wrapper .stars-display i:hover {
+    transform: scale(1.2);
+}
+.rating-display-wrapper .stars-display .user-rated {
+    color: #ff9800; /* Kicsit sötétebb narancs a saját értékeléshez */
+}
+.rating-display-wrapper .rating-count {
+    font-size: 0.8em;
+    color: #888;
+}
+
+/* =================================
+   POST.PHP - ADMIN IKON GOMBOK
+==================================== */
+
+.admin-actions-single .action-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%; /* Kör alak */
+    font-size: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* Alap szerkesztés gomb */
+.admin-actions-single a.action-btn {
+    background-color: #6c757d; /* Szürke háttér */
+    color: white;
+}
+.admin-actions-single a.action-btn:hover {
+    background-color: #5a6268;
+}
+
+/* Törlés gomb (felülírja a danger-btn alap stílusát, hogy itt is kör legyen) */
+.admin-actions-single .danger-btn {
+    background-color: #dc3545; /* Piros háttér */
+    color: white;
+}
+.admin-actions-single .danger-btn:hover {
+    background-color: #c82333;
+}
+
+/* ===================================================
+   RECEPT MEGJELENÍTŐ OLDAL (POST.PHP) - VÉGLEGES STÍLUS
+====================================================== */
+
+/* A fő fejléc stílusa */
+.single-post-header {
+    text-align: center;
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee; /* Halvány elválasztó vonal a fejléc alatt */
+}
+.single-post-header h1 {
+    font-size: 3.5em;
+    font-weight: 700;
+    letter-spacing: -1px;
+    margin-bottom: 15px;
+    line-height: 1.2;
+}
+/* A régi meta és byline stílusok eltávolítása */
+.post-meta, .post-byline {
+    display: none;
+}
+
+/* Új stílus a szerzőnek */
+.recipe-author-line {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+.by-text {
+    font-family: serif; /* Vagy egy másik elegáns betűtípus */
+    font-style: italic;
+    font-size: 1.1em;
+    color: #888;
+}
+.author-name a {
+    font-size: 1.1em;
+    font-weight: 600;
+    color: #333;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+.author-name a:hover {
+    color: var(--primary-color, #5d8c61);
+}
+
+/* Értékelő sáv áthelyezett stílusa */
+.rating-display-wrapper {
+    display: flex; /* Flex-re váltunk a könnyebb igazításért */
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+.rating-display-wrapper .stars-display {
+    color: #ffc107;
+    font-size: 1.2em;
+    cursor: pointer;
+}
+.rating-display-wrapper .stars-display i {
+    transition: transform 0.2s ease;
+}
+.rating-display-wrapper .stars-display i:hover {
+    transform: scale(1.2);
+}
+.rating-display-wrapper .stars-display .user-rated {
+    color: #ff9800;
+}
+.rating-display-wrapper .rating-count {
+    font-size: 0.9em;
+    color: #888;
+}
+
+/* Statisztikák (idő, adag) stílusai (változatlan) */
+.recipe-stats { display: flex; justify-content: center; align-items: center; gap: 30px; padding: 20px 0; margin-bottom: 30px; }
+.stat-item { display: flex; flex-direction: column; align-items: center; }
+.stat-item .stat-value { font-size: 2em; font-weight: bold; color: var(--primary-color, #5d8c61); line-height: 1.1; }
+.stat-item .stat-label { font-size: 0.9em; color: #777; text-transform: uppercase; letter-spacing: 0.5px; }
+.stat-divider { width: 1px; height: 40px; background-color: #e0e0e0; }
+
+/* Kép stílusai (változatlan) */
+.single-post-feature-image { margin-bottom: 40px; max-height: 500px; overflow: hidden; border-radius: 12px; }
+.single-post-feature-image img { width: 100%; height: 100%; display: block; object-fit: cover; }
+
+/* =================================
+   BEVÁSÁRLÓLISTA ÉS TOAST ÉRTESÍTÉS
+==================================== */
+
+/* --- Toast (felugró üzenet) --- */
+#toast-notification {
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translate(-50%, -100px);
+    background-color: var(--accent-color, #4db057);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 50px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 2000;
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+}
+#toast-notification.show {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+#toast-notification i {
+    font-size: 1.2em;
+}
+
+/* --- Hozzávaló kattinthatóvá tétele --- */
+.ingredient-add-to-list {
+    cursor: pointer;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+.ingredient-add-to-list:hover {
+    color: var(--primary-color, #5d8c61);
+}
+
+/* --- Bevásárlólista Konténer --- */
+#shopping-list-container {
+    position: fixed;
+    bottom: 0;
+    right: 20px;
+    width: 320px;
+    z-index: 1500;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+#shopping-list-container.collapsed {
+    transform: translateY(calc(100% - 50px)); /* A fejléc magassága látszik ki */
+}
+
+/* --- Fejléc --- */
+.shopping-list-header {
+    height: 50px;
+    background-color: var(--primary-color, #5d8c61);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    cursor: pointer;
+}
+.shopping-list-header h3 {
+    font-size: 1.1em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.item-counter {
+    background-color: rgba(255,255,255,0.2);
+    font-weight: bold;
+    border-radius: 50px;
+    padding: 2px 8px;
+    font-size: 0.9em;
+}
+
+/* --- Lista Törzs (jegyzettömb stílus) --- */
+.shopping-list-body {
+    background-color: #fff;
+    box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+    padding: 15px;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+}
+#shopping-list-items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 300px;
+    overflow-y: auto;
+    /* A háttérkép (ami a vonalakat adta) eltávolítva */
+}
+.shopping-list-item {
+    display: flex;
+    align-items: center;
+    /* A padding növelése a jobb térközért */
+    padding: 8px 5px; 
+    font-size: 1em;
+    /* A line-height eltávolítva, hogy a padding irányítsa a magasságot */
+}
+.shopping-list-item.checked .item-text {
+    text-decoration: line-through;
+    opacity: 0.5;
+}
+
+/* --- Lista Elemek (pipa, szöveg, törlés) --- */
+.item-checkbox {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ccc;
+    border-radius: 4px; /* Enyhén lekerekített négyzet */
+    margin-right: 15px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+}
+/* Javított kód */
+.item-checkbox::after { /* A pipa */
+    content: '\f00c'; /* A pipa Unicode kódja */
+    font-family: 'Font Awesome 6 Free'; /* Megmondja, hogy az ikonbetűtípust használja */
+    font-weight: 900; /* Kiválasztja a "Solid" (teli) stílusú ikonokat */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    color: white;
+    transition: transform 0.2s;
+}
+.shopping-list-item.checked .item-checkbox {
+    background-color: var(--accent-color, #4db057); /* A háttér zöld */
+    border-color: var(--accent-color, #4db057);
+}
+.shopping-list-item.checked .item-checkbox::after {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.item-text {
+    flex-grow: 1;
+}
+.item-delete {
+    background: none;
+    border: none;
+    font-size: 1.5em;
+    color: #ccc;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.item-delete:hover {
+    color: #dc3545;
+}
+.empty-list-item {
+    color:#721c24;
+    text-align: center;
+}
+
+#clear-list-btn {
+    width: 100%;
+    border: none;
+    background: #721c24;
+    color: white;
+    padding: 8px;
+    margin-top: 15px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+#clear-list-btn:hover { background-color: white; color: #721c24;}
+
+
+/* --- Mobil Nézet --- */
+@media (max-width: 768px) {
+    #shopping-list-container {
+        width: 100%;
+        right: 0;
+    }
+    #shopping-list-container.has-items {
+        display: block;
+    }
+    #shopping-list-container.collapsed {
+        transform: translateY(calc(100% - 50px));
+    }
+    .shopping-list-header {
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+    }
+    #shopping-list-items {
+        max-height: 200px; /* Alacsonyabb magasság mobilon */
+    }
+}
+
+/* =================================
+   MOBILBARÁT NÉZET - KIEGÉSZÍTÉSEK
+==================================== */
+
+.navbar .menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    width: 24px;
+    height: 18px;
+    position: relative;
+    z-index: 1001; /* Biztosítja, hogy a menü felett legyen */
+}
+
+.navbar .menu-toggle .bar {
+    display: block;
+    width: 100%;
+    height: 3px;
+    background-color: white;
+    border-radius: 3px;
+    position: absolute;
+    left: 0;
+    transition: all 0.35s ease-in-out;
+}
+
+.navbar .menu-toggle .bar:nth-child(1) {
+    top: 0;
+}
+
+.navbar .menu-toggle .bar:nth-child(2) {
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.navbar .menu-toggle .bar:nth-child(3) {
+    bottom: 0;
+}
+
+.navbar .menu-toggle.active .bar:nth-child(1) {
+    transform: translateY(7.5px) rotate(45deg);
+}
+
+.navbar .menu-toggle.active .bar:nth-child(2) {
+    opacity: 0;
+}
+
+.navbar .menu-toggle.active .bar:nth-child(3) {
+    transform: translateY(-7.5px) rotate(-45deg);
+}
+
+
+@media (max-width: 992px) {
+    .posts-grid-layout {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        grid-auto-rows: auto;
+    }
+
+    .post-card, .post-card.card-size-2, .post-card.card-size-3, .post-card.kiemelt {
+        grid-column: span 1;
+        grid-row-end: auto;
+        height: 350px;
+    }
+    
+    .step-description p {
+        font-size: 1em;
+    }
+}
+
+@media (max-width: 768px) {
+    .navbar .menu {
+        position: fixed;
+        top: 80px;
+        left: 0;
+        width: 100%;
+        height: calc(100vh - 80px);
+        background-color: var(--primary-color, #5d8c61);
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .navbar .menu.active {
+        transform: translateX(0);
+    }
+    
+    .navbar .menu-toggle {
+        display: block;
+    }
+
+    .banner h1 {
+        font-size: 32px;
+    }
+
+    .profile-header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .profile-picture-container {
+        margin-right: 0;
+        margin-bottom: 15px;
+    }
+
+    .search-controls form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .modal-content {
+        width: 90%;
+        margin: 20% auto;
+    }
+    
+    .recipe-wizard-container {
+        padding: 20px;
+    }
+
+    .ingredient-row {
+        flex-wrap: wrap;
+    }
+    
+    .ingredient-row input[name^="quantity"],
+    .ingredient-row select[name^="unit"] {
+        flex-basis: 48%;
+    }
+    
+    .ingredient-row input[name^="ingredient_name"] {
+        flex-basis: 100%;
+        margin-top: 10px;
+    }
+}
+
+/* --- Bevásárlólista nyíl forgatása --- */
+.shopping-list-arrow {
+    margin-left: auto; /* A nyilat a jobb szélre tolja */
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); /* Finom animáció */
+}
+
+#shopping-list-container.collapsed .shopping-list-arrow {
+    transform: rotate(180deg); /* Elforgatja a nyilat, ha a lista össze van csukva */
+}
+
+/* --- Hozzávalók fejléc és "Összes hozzáadása" gomb --- */
+.ingredients-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px; /* Helyettesíti a h2 elem alsó margóját */
+}
+
+.ingredients-header h2 {
+    margin-bottom: 0; /* Eltávolítjuk a margót, mert a szülőn van */
+}
+
+.btn-modern-blue {
+    background-color: #007bff; /* Kék szín */
+    color: white;
+    border: none;
+    border-radius: 50px; /* Lekerekített forma */
+    padding: 8px 16px;
+    font-size: 0.9em;
+    font-weight: bold;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-modern-blue:hover {
+    background-color: #0056b3; /* Sötétebb kék hover esetén */
+    transform: translateY(-2px);
+}
+
+.btn-modern-blue:active {
+    transform: translateY(0);
+}
+
+/* --- "Összes hozzáadása" gomb animált állapota --- */
+.btn-modern-blue {
+    /* Kiegészítjük a meglévő stílust a zökkenőmentes átmenethez */
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
+    border: 2px solid transparent; /* Hozzáadunk egy átlátszó keretet, hogy a méret ne változzon */
+}
+
+.btn-modern-blue.added-to-list {
+    background-color: transparent;
+    color: var(--accent-color, #4db057); /* A téma zöld színe */
+    border-color: var(--accent-color, #4db057);
+    cursor: default; /* A kurzor jelzi, hogy már nem kattintható */
+}
+
+/* Kikapcsoljuk a hover effektet, ha már hozzáadtuk az elemeket */
+.btn-modern-blue.added-to-list:hover {
+    background-color: transparent;
+    transform: none;
+}
+
+/* --- "Összes hozzáadása" gomb mobilbarát stílusai --- */
+
+/* Alapértelmezetten a gombban lévő szöveg látható */
+.btn-modern-blue .btn-text {
+    display: inline-block;
+    transition: display 0.3s;
+}
+
+/* Mobil nézet (768px szélesség alatt) */
+@media (max-width: 768px) {
+    /* A szöveg elrejtése */
+    .btn-modern-blue .btn-text {
+        display: none;
+    }
+
+    /* A gomb átalakítása kör alakú ikongombbá */
+    #add-all-ingredients-btn {
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        border-radius: 50%;
+        font-size: 1.1em;
+    }
+
+    /* A fejléc elemeinek jobb igazítása mobilon */
+    .ingredients-header {
+        align-items: center;
+    }
+}
+
+/* =================================
+   BEJELENTKEZÉS MODÁL (ÚJ)
+==================================== */
+.login-modal-content {
+    max-width: 450px;
+    padding: 0;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    border: none;
+    animation: slideDown 0.4s ease;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-50px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.login-header {
+    background-color: var(--primary-color, #5d8c61);
+    color: white;
+    padding: 30px 20px;
+    text-align: center;
+}
+.login-header h2 { margin: 0 0 5px 0; font-size: 2em; }
+.login-header p { margin: 0; opacity: 0.8; font-size: 0.95em; }
+
+.login-form { padding: 30px; }
+
+.login-form .form-group { margin-bottom: 20px; }
+.login-form label { display: block; margin-bottom: 8px; font-weight: 500; color: #555; }
+.login-form label i { margin-right: 5px; color: var(--primary-color, #5d8c61); }
+
+.login-form .form-control {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    transition: all 0.3s;
+    background-color: #f8f9fa;
+}
+.login-form .form-control:focus {
+    border-color: var(--primary-color, #5d8c61);
+    background-color: #fff;
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(93, 140, 97, 0.1);
+}
+
+.forgot-password-link { text-align: right; margin-bottom: 25px; }
+.forgot-password-link a { color: #888; text-decoration: none; font-size: 0.9em; transition: color 0.3s; }
+.forgot-password-link a:hover { color: var(--primary-color, #5d8c61); }
+
+.login-submit-btn {
+    width: 100%;
+    padding: 14px;
+    background-color: var(--primary-color, #5d8c61);
+    color: white;
+    font-size: 1.1em;
+    font-weight: bold;
+    border-radius: 8px;
+    transition: background-color 0.3s, transform 0.2s;
+}
+.login-submit-btn:hover {
+    background-color: #4a744e;
+    transform: translateY(-2px);
+}
+
+.login-footer {
+    background-color: #f8f9fa;
+    padding: 20px;
+    text-align: center;
+    border-top: 1px solid #eee;
+    font-size: 0.95em;
+}
+.login-footer a { color: var(--primary-color, #5d8c61); font-weight: bold; text-decoration: none; }
+.login-footer a:hover { text-decoration: underline; }
+
+/* Elfelejtett jelszó oldal konténere */
+.forgot-password-container {
+    max-width: 500px;
+    margin: 50px auto;
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    text-align: center;
+}
+.forgot-password-icon {
+    font-size: 4em;
+    color: var(--primary-color, #5d8c61);
+    margin-bottom: 20px;
+}
